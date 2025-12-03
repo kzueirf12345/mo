@@ -12,6 +12,9 @@ struct Query {
     size_t index;
 };
 
+void AddPosition(size_t pos, const std::vector<size_t>& arr, std::vector<size_t>& freq, long long &curCnt);
+void RemovePosition(size_t pos, const std::vector<size_t>& arr, std::vector<size_t>& freq, long long &curCnt);
+
 int main() {
     size_t n = 0, m = 0;
 
@@ -65,45 +68,23 @@ int main() {
     size_t curRight = 0;
     long long curCnt = 0;
 
-    for (size_t i = 1; i <= m; ++i) {
-        const Query q = queries[i];
-        
-        // Уменьшаем левую границу
+    for (const Query &q : queries) {
         while (curLeft > q.left) {
             --curLeft;
-            size_t val = arr[curLeft];
-            size_t curFreq = freq[val];
-            curCnt += static_cast<long long>(val * (2 * curFreq + 1));
-            ++freq[val];
+            AddPosition(curLeft, arr, freq, curCnt);
         }
-        
-        // Увеличиваем правую границу
         while (curRight < q.right) {
             ++curRight;
-            size_t val = arr[curRight];
-            size_t curFreq = freq[val];
-            curCnt += static_cast<long long>(val * (2 * curFreq + 1));
-            ++freq[val];
+            AddPosition(curRight, arr, freq, curCnt);
         }
-        
-        // Увеличиваем левую границу
         while (curLeft < q.left) {
-            size_t val = arr[curLeft];
-            size_t curFreq = freq[val];
-            curCnt -= static_cast<long long>(val * (2 * curFreq - 1));
-            --freq[val];
+            RemovePosition(curLeft, arr, freq, curCnt);
             ++curLeft;
         }
-        
-        // Уменьшаем правую границу
         while (curRight > q.right) {
-            size_t val = arr[curRight];
-            size_t curFreq = freq[val];
-            curCnt -= static_cast<long long>(val * (2 * curFreq - 1));
-            --freq[val];
+            RemovePosition(curRight, arr, freq, curCnt);
             --curRight;
         }
-        
         ans[q.index] = curCnt;
     }
 
@@ -112,4 +93,18 @@ int main() {
     }
     
     return 0;
+}
+
+void AddPosition(size_t pos, const std::vector<size_t>& arr, std::vector<size_t>& freq, long long &curCnt) {
+    size_t val = arr[pos];
+    size_t curFreq = freq[val];
+    curCnt += 1LL * val * (2LL * curFreq + 1LL);
+    ++freq[val];
+}
+
+void RemovePosition(size_t pos, const std::vector<size_t>& arr, std::vector<size_t>& freq, long long &curCnt) {
+    size_t val = arr[pos];
+    size_t curFreq = freq[val];
+    curCnt -= 1LL * val * (2LL * curFreq - 1LL);
+    --freq[val];
 }
