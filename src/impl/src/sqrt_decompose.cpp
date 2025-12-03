@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <vector>
 
+// https://codeforces.com/problemset/problem/86/D
+
 int main() {
     size_t n = 0, m = 0;
 
